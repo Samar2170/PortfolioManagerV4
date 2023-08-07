@@ -1,7 +1,7 @@
-package internal
+package models
 
 import (
-	"github.com/samar2170/pkg/db"
+	"github.com/samar2170/portfolio-manager-v4/pkg/db"
 	"gorm.io/gorm"
 )
 
@@ -19,4 +19,10 @@ func (u *User) create() error {
 
 func (u *User) update() error {
 	return db.DB.Save(u).Error
+}
+
+type Watchlist struct {
+	*gorm.Model
+	UserCID string `gorm:"index"`
+	Name    string
 }
