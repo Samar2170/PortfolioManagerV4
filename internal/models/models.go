@@ -19,7 +19,7 @@ type DBModel interface {
 	update() error
 }
 
-func createModelInstance(model DBModel) error {
+func CreateModelInstance(model DBModel) error {
 	err := model.create()
 	switch err {
 	case gorm.ErrDuplicatedKey:
