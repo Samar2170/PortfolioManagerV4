@@ -8,17 +8,6 @@ import (
 	"github.com/samar2170/portfolio-manager-v4/internal/utils"
 )
 
-type SignupRequest struct {
-	Username string
-	Password string
-	Email    string
-}
-
-type LoginRequest struct {
-	Username string
-	Password string
-}
-
 func Signup(s SignupRequest) error {
 	encryptedPassword, err := utils.EncryptPassword(s.Password, passwordDecryptionKey)
 	if err != nil {
@@ -37,7 +26,19 @@ func Signup(s SignupRequest) error {
 		UserCID:  resp.Response,
 	}
 	err = models.CreateModelInstance(&dbUser)
+	if err != nil {
+		return err
+	}
+	err = createGeneralAccountForUser(&dbUser)
 	return err
+}
+
+func createGeneralAccountForUser(user *models.User) error {
+	generalAccount := models.GeneralAccount{
+		UserCID:     user.UserCID,
+		AccountCode: user.UserCID,
+	}
+	return models.CreateModelInstance(&generalAccount)
 }
 
 func Login(l LoginRequest) (string, error) {
@@ -53,4 +54,31 @@ func Login(l LoginRequest) (string, error) {
 		return "", err
 	}
 	return resp.Token, nil
+}
+
+func RegisterBankAccount(ba BankAccountRequest, userCID string) error {
+	_, err := models.GetUserByCID(userCID)
+	if err != nil {
+		return err
+	}
+	bankAccount := models.BankAccount{
+		UserCID:   userCID,
+		Bank:      ba.Bank,
+		AccountNo: ba.AccountNo,
+	}
+	return models.CreateModelInstance(&bankAccount)
+
+}
+
+func RegisterDematAccount(da DematAccountRequest, userCID string) error {
+	_, err := models.GetUserByCID(userCID)
+	if err != nil {
+		return err
+	}
+	dematAccount := models.DematAccount{
+		UserCID:     userCID,
+		AccountCode: da.AccountCode,
+		Broker:      da.Broker,
+	}
+	return models.CreateModelInstance(&dematAccount)
 }
