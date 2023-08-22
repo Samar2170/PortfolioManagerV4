@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/samar2170/portfolio-manager-v4/api"
+	mutualfund "github.com/samar2170/portfolio-manager-v4/security/mutual-fund"
 )
 
 func main() {
@@ -13,9 +14,14 @@ func main() {
 	switch arg {
 	case "setup":
 		fmt.Println("setting up")
+		setup()
 	default:
 		fmt.Println("starting")
 		api.StartServer()
-
 	}
+}
+
+func setup() {
+	// stock.LoadData()
+	mutualfund.LoadData()
 }

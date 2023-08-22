@@ -7,6 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
+func init() {
+	db.DB.AutoMigrate(MutualFund{})
+	db.DB.AutoMigrate(MutualFundNavHistory{})
+}
+
 type MutualFund struct {
 	*gorm.Model
 	ID                   int
@@ -40,4 +45,16 @@ func (m *MutualFund) Create() error {
 func (m *MutualFund) GetOrCreate() (MutualFund, error) {
 	err := db.DB.FirstOrCreate(&m, MutualFund{SchemeName: m.SchemeName, SchemeNavName: m.SchemeNavName}).Error
 	return *m, err
+}
+
+func GetMutualFundBySchemeNavName(schemeNavName string) (MutualFund, error) {
+	var mf MutualFund
+	err := db.DB.First(&mf, "scheme_nav_name = ?", schemeNavName).Error
+	return mf, err
+}
+
+func SearchMutualFund(query string) MutualFund {
+	var mf MutualFund
+	db.DB.Where("scheme_nav_name ILIKE ?", query).Find(&mf)
+	return mf
 }
