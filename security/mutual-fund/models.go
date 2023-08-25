@@ -17,7 +17,7 @@ type MutualFund struct {
 	ID                   int
 	SchemeName           string `gorm:"index"`
 	SchemeCategory       string `gorm:"index"`
-	SchemeNavName        string `gorm:"index"`
+	SchemeNavName        string `gorm:"uniqueIndex"`
 	ParentSchemeCategory string `gorm:"index"`
 	PriceToBeUpdated     bool
 }
@@ -25,25 +25,25 @@ type MutualFund struct {
 type MutualFundNavHistory struct {
 	*gorm.Model
 	ID           int
-	MutualFund   MutualFund `gorm:"foreignKey:MutualFundID;index"`
+	MutualFund   MutualFund `gorm:"index"`
 	MutualFundID int
 	Nav          float64
 	Date         time.Time
 	Source       string
 }
 
-func (m *MutualFundNavHistory) Create() error {
+func (m *MutualFundNavHistory) create() error {
 	err := db.DB.Create(&m).Error
 	return err
 }
 
-func (m *MutualFund) Create() error {
+func (m *MutualFund) create() error {
 	err := db.DB.Create(&m).Error
 	return err
 }
 
-func (m *MutualFund) GetOrCreate() (MutualFund, error) {
-	err := db.DB.FirstOrCreate(&m, MutualFund{SchemeName: m.SchemeName, SchemeNavName: m.SchemeNavName}).Error
+func (m *MutualFund) getOrCreate() (MutualFund, error) {
+	err := db.DB.FirstOrCreate(&m, "scheme_nav_name = ?", m.SchemeNavName).Error
 	return *m, err
 }
 

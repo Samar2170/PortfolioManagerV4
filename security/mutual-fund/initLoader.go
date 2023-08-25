@@ -45,16 +45,21 @@ func loadDataWithNav() {
 				log.Println(amcName)
 			}
 		} else {
-			mf, err := GetMutualFundBySchemeNavName(fields[3])
+			mf, err := GetMutualFundBySchemeNavName(fields[1])
+			log.Println("fields -----------------------------")
+			log.Println(fields)
 			log.Println(mf)
 			log.Println(err)
 			log.Println("--------------------------------------")
 			if err != nil {
 				mf = MutualFund{
-					SchemeNavName:  fields[1],
-					SchemeCategory: schemeCategory,
+					SchemeNavName: fields[1],
 				}
-				mf, _ = mf.GetOrCreate()
+				mf, err = mf.getOrCreate()
+				if err != nil {
+					log.Println("error in creating mf")
+					log.Println(err)
+				}
 			}
 			navFloat, err := strconv.ParseFloat(fields[4], 32)
 			if err != nil {
@@ -65,11 +70,11 @@ func loadDataWithNav() {
 				log.Println("time is not proper format")
 			}
 			mfnh := MutualFundNavHistory{
-				MutualFund: mf,
-				Nav:        navFloat,
-				Date:       parsedTime,
+				MutualFundID: mf.ID,
+				Nav:          navFloat,
+				Date:         parsedTime,
 			}
-			mfnh.Create()
+			mfnh.create()
 		}
 	}
 

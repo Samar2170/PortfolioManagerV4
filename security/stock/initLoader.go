@@ -7,7 +7,7 @@ import (
 )
 
 func loadNSEStocks() {
-	f, err := excelize.OpenFile("Assets/init/ind_nifty500list.xlsx")
+	f, err := excelize.OpenFile("assets/init/ind_nifty500list.xlsx")
 	if err != nil {
 		log.Println(err)
 	}
@@ -38,7 +38,7 @@ func loadNSEStocks() {
 }
 
 func loadBSEStocks() {
-	f, err := excelize.OpenFile("Assets/init/BSEEquities.xlsx")
+	f, err := excelize.OpenFile("assets/init/BSEEquities.xlsx")
 	if err != nil {
 		log.Println(err)
 	}

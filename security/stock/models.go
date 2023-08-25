@@ -7,15 +7,19 @@ import (
 	"gorm.io/gorm"
 )
 
+func init() {
+	db.DB.AutoMigrate(&Stock{})
+	db.DB.AutoMigrate(&StockPriceHistory{})
+}
+
 type Stock struct {
 	*gorm.Model
-	ID           int
-	Symbol       string `gorm:"index"`
-	Name         string
-	Industry     string
-	Exchange     string
-	SecurityCode string `gorm:"unique;index"`
-
+	ID                   int
+	Symbol               string `gorm:"index"`
+	Name                 string
+	Industry             string
+	Exchange             string
+	SecurityCode         string `gorm:"index;"`
 	PriceToBeUpdated     bool
 	PriceToBeUpdatedRank int
 }
@@ -23,7 +27,7 @@ type Stock struct {
 type StockPriceHistory struct {
 	*gorm.Model
 	ID      int
-	Stock   Stock `gorm:"foreignKey:StockID;index"`
+	Stock   Stock `gorm:"index"`
 	StockID int
 	Price   float64
 	Volume  float64

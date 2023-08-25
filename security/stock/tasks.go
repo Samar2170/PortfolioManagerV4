@@ -40,10 +40,10 @@ func updateStockPrice(stock Stock) error {
 		}
 		if t.After(latestDate) {
 			stockPriceHistory := StockPriceHistory{
-				StockID: stock.ID,
-				Price:   dp.Close,
-				Volume:  dp.Volume,
-				Date:    t,
+				Stock:  stock,
+				Price:  dp.Close,
+				Volume: dp.Volume,
+				Date:   t,
 			}
 			stockPriceHistory.Create()
 			log.Println("Created stock price history for ", stock.Symbol, " on ", t)
