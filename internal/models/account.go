@@ -50,3 +50,48 @@ func (g *GeneralAccount) create() error {
 func (g *GeneralAccount) update() error {
 	return db.DB.Save(g).Error
 }
+
+func GetAccountsByUserCID(userCID string) ([]BankAccount, []DematAccount, []GeneralAccount, error) {
+	var bankAccounts []BankAccount
+	var dematAccounts []DematAccount
+	var generalAccounts []GeneralAccount
+	err := db.DB.Where("user_cid = ?", userCID).Find(&bankAccounts).Error
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	err = db.DB.Where("user_cid = ?", userCID).Find(&dematAccounts).Error
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	err = db.DB.Where("user_cid = ?", userCID).Find(&generalAccounts).Error
+	if err != nil {
+		return nil, nil, nil, err
+	}
+	return bankAccounts, dematAccounts, generalAccounts, nil
+}
+
+func GetDematAccountsByUserCID(userCID string) ([]DematAccount, error) {
+	var dematAccounts []DematAccount
+	err := db.DB.Where("user_cid = ?", userCID).Find(&dematAccounts).Error
+	if err != nil {
+		return nil, err
+	}
+	return dematAccounts, nil
+}
+func GetBankAccountsByUserCID(userCID string) ([]BankAccount, error) {
+	var bankAccounts []BankAccount
+	err := db.DB.Where("user_cid = ?", userCID).Find(&bankAccounts).Error
+	if err != nil {
+		return nil, err
+	}
+	return bankAccounts, nil
+}
+
+func GetGeneralAccountsByUserCID(userCID string) ([]GeneralAccount, error) {
+	var generalAccounts []GeneralAccount
+	err := db.DB.Where("user_cid = ?", userCID).Find(&generalAccounts).Error
+	if err != nil {
+		return nil, err
+	}
+	return generalAccounts, nil
+}
