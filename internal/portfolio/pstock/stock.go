@@ -21,6 +21,20 @@ type StockTrade struct {
 	Account   models.DematAccount
 }
 
+func NewStockTrade(symbol string, quantity int, price float64, tradeDate, tradeType string) (*StockTrade, error) {
+	stock, err := stock.GetStockBySymbol(symbol)
+	if err != nil {
+		return nil, err
+	}
+	return &StockTrade{
+		StockID:   stock.ID,
+		Quantity:  quantity,
+		Price:     price,
+		TradeType: tradeType,
+		TradeDate: tradeDate,
+	}, nil
+}
+
 type StockHolding struct {
 	*gorm.Model
 	StockID  int

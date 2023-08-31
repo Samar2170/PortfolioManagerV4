@@ -20,3 +20,39 @@ type DematAccountRequest struct {
 	AccountCode string `json:"account_code"`
 	Broker      string `json:"broker"`
 }
+
+type StockTradeRequest struct {
+	Symbol    string  `json:"symbol"`
+	Quantity  int     `json:"quantity"`
+	Price     float64 `json:"price"`
+	TradeType string  `json:"trade_type"`
+	TradeDate string  `json:"trade_date"`
+}
+
+// func (st *StockTradeRequest) BulkUploadTemplate() {
+// 	fields := structs.Fields(st)
+// }
+
+type BondTradeRequest struct {
+	Symbol    string  `json:"symbol"`
+	Quantity  int     `json:"quantity"`
+	Price     float64 `json:"price"`
+	TradeType string  `json:"trade_type"`
+	TradeDate string  `json:"trade_date"`
+}
+
+type MutualFundTradeRequest struct {
+	MutualFundID int     `json:"mutual_fund_id"`
+	Quantity     float64 `json:"quantity"`
+	Price        float64 `json:"price"`
+	TradeType    string  `json:"trade_type"`
+	TradeDate    string  `json:"trade_date"`
+}
+
+type ETSTradeRequest struct {
+	Symbol    string  `json:"symbol"`
+	Quantity  int     `json:"quantity"`
+	Price     float64 `json:"price"`
+	TradeType string  `json:"trade_type"`
+	TradeDate string  `json:"trade_date"`
+}

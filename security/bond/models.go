@@ -12,6 +12,7 @@ func init() {
 }
 
 type Bond struct {
+	ID        int
 	Symbol    string `gorm:"index"`
 	Name      string
 	IpFreq    string
@@ -50,4 +51,10 @@ func (b *Bond) getLatestDate() (time.Time, error) {
 func (b *BondPriceHistory) create() error {
 	err := db.DB.Create(&b).Error
 	return err
+}
+
+func GetBondBySymbol(symbol string) (Bond, error) {
+	var b Bond
+	err := db.DB.First(&b, "symbol = ?", symbol).Error
+	return b, err
 }

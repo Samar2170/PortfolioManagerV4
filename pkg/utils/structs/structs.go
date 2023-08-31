@@ -28,6 +28,18 @@ func (s *Struct) Map() map[string]interface{} {
 	s.FillMap(out)
 	return out
 }
+func (s *Struct) MapWithType() map[string]string {
+	out := make(map[string]string)
+	s.FillMapWithType(out)
+	return out
+}
+func (s *Struct) FillMapWithType(out map[string]string) {
+	fields := s.structFields()
+
+	for _, field := range fields {
+		out[field.Name] = field.Type.Name()
+	}
+}
 
 func strctVal(s interface{}) reflect.Value {
 	v := reflect.ValueOf(s)
@@ -193,4 +205,97 @@ func (s *Struct) nested(val reflect.Value) interface{} {
 	}
 
 	return finalVal
+}
+func (s *Struct) Values() []interface{} {
+	fields := s.structFields()
+
+	var t []interface{}
+
+	for _, field := range fields {
+		val := s.value.FieldByName(field.Name)
+
+		_, tagOpts := parseTag(field.Tag.Get(s.TagName))
+
+		// if the value is a zero value and the field is marked as omitempty do
+		// not include
+		if tagOpts.Has("omitempty") {
+			zero := reflect.Zero(val.Type()).Interface()
+			current := val.Interface()
+
+			if reflect.DeepEqual(current, zero) {
+				continue
+			}
+		}
+
+		if tagOpts.Has("string") {
+			s, ok := val.Interface().(fmt.Stringer)
+			if ok {
+				t = append(t, s.String())
+			}
+			continue
+		}
+
+		if IsStruct(val.Interface()) && !tagOpts.Has("omitnested") {
+			// look out for embedded structs, and convert them to a
+			// []interface{} to be added to the final values slice
+			t = append(t, Values(val.Interface())...)
+		} else {
+			t = append(t, val.Interface())
+		}
+	}
+
+	return t
+}
+func Values(s interface{}) []interface{} {
+	return New(s).Values()
+}
+func IsStruct(s interface{}) bool {
+	v := reflect.ValueOf(s)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	// uninitialized zero value of a struct
+	if v.Kind() == reflect.Invalid {
+		return false
+	}
+
+	return v.Kind() == reflect.Struct
+}
+func (s *Struct) Fields() []*Field {
+	return getFields(s.value, s.TagName)
+}
+
+func getFields(v reflect.Value, tagName string) []*Field {
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	t := v.Type()
+
+	var fields []*Field
+
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+
+		if tag := field.Tag.Get(tagName); tag == "-" {
+			continue
+		}
+
+		f := &Field{
+			field: field,
+			value: v.FieldByName(field.Name),
+		}
+
+		fields = append(fields, f)
+
+	}
+
+	return fields
+}
+
+type Field struct {
+	value      reflect.Value
+	field      reflect.StructField
+	defaultTag string
 }

@@ -12,6 +12,8 @@ import (
 var passwordDecryptionKey string
 var cognitioClient = new(cauth.AuthServiceClient)
 
+const TradeDateFormat = "2006-01-02"
+
 func init() {
 	viper.SetConfigFile(".env")
 	viper.ReadInConfig()

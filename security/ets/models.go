@@ -14,7 +14,7 @@ func init() {
 
 type ETS struct {
 	*gorm.Model
-	ID               uint
+	ID               int
 	Symbol           string `gorm:"index"`
 	Name             string
 	SecurityCode     string `gorm:"uniqueIndex"`
@@ -50,4 +50,10 @@ func (e *ETS) getLatestDate() (time.Time, error) {
 func (e *ETSPriceHistory) create() error {
 	err := db.DB.Create(&e).Error
 	return err
+}
+
+func GetETSBySymbol(symbol string) (ETS, error) {
+	var e ETS
+	err := db.DB.First(&e, "symbol = ?", symbol).Error
+	return e, err
 }

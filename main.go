@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"sync"
 	"time"
 
 	"github.com/samar2170/portfolio-manager-v4/api"
+	"github.com/samar2170/portfolio-manager-v4/internal"
+
 	// "github.com/samar2170/portfolio-manager-v4/security/bond"
 	// "github.com/samar2170/portfolio-manager-v4/security/ets"
 	"github.com/samar2170/portfolio-manager-v4/security/bond"
@@ -24,6 +27,8 @@ func main() {
 	case "setup":
 		fmt.Println("setting up")
 		setup()
+	case "dev":
+		dev()
 	default:
 		fmt.Println("starting")
 		api.StartServer()
@@ -51,4 +56,12 @@ func setup() {
 		wg.Done()
 	}()
 	wg.Wait()
+}
+
+func dev() {
+	err := internal.CreateTradeTemplate()
+	if err != nil {
+		log.Println(err)
+	}
+	internal.TestExcelize()
 }

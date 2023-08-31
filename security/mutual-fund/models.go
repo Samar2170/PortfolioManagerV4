@@ -25,7 +25,7 @@ type MutualFund struct {
 type MutualFundNavHistory struct {
 	*gorm.Model
 	ID           int
-	MutualFund   MutualFund `gorm:"index"`
+	MutualFund   MutualFund
 	MutualFundID int
 	Nav          float64
 	Date         time.Time
@@ -57,4 +57,10 @@ func SearchMutualFund(query string) MutualFund {
 	var mf MutualFund
 	db.DB.Where("scheme_nav_name ILIKE ?", query).Find(&mf)
 	return mf
+}
+
+func GetMutualFundByID(id int) (MutualFund, error) {
+	var mf MutualFund
+	err := db.DB.First(&mf, id).Error
+	return mf, err
 }

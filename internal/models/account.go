@@ -8,7 +8,7 @@ import (
 type BankAccount struct {
 	*gorm.Model
 	ID        int
-	UserCID   string `gorm:"index"`
+	UserCID   string `gorm:"unique;index"`
 	Bank      string
 	AccountNo string `gorm:"unique;index"`
 }

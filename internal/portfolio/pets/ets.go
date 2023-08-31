@@ -2,9 +2,12 @@ package pets
 
 import (
 	"errors"
+	"time"
 
+	"github.com/samar2170/portfolio-manager-v4/internal"
 	"github.com/samar2170/portfolio-manager-v4/internal/models"
 	"github.com/samar2170/portfolio-manager-v4/pkg/db"
+	"github.com/samar2170/portfolio-manager-v4/pkg/utils"
 	"github.com/samar2170/portfolio-manager-v4/security/ets"
 	"github.com/samar2170/portfolio-manager-v4/security/stock"
 	"gorm.io/gorm"
@@ -18,9 +21,29 @@ type ETSTrade struct {
 	Quantity  int
 	Price     float64
 	TradeType string
-	TradeDate string
+	TradeDate time.Time
 	Account   models.DematAccount
 }
+
+func NewETSTrade(symbol string, quantity int, price float64, tradeDate, tradeType string) (*ETSTrade, error) {
+	ets, err := ets.GetETSBySymbol(symbol)
+	if err != nil {
+		return nil, err
+	}
+	tradeDateParsed, err := utils.ParseTime(tradeDate, internal.TradeDateFormat)
+	if err != nil {
+		return nil, errors.New("invalid trade date")
+	}
+
+	return &ETSTrade{
+		ETSID:     ets.ID,
+		Quantity:  quantity,
+		Price:     price,
+		TradeType: tradeType,
+		TradeDate: tradeDateParsed,
+	}, nil
+}
+
 type ETSHolding struct {
 	*gorm.Model
 	ETSID    int

@@ -27,7 +27,7 @@ type Stock struct {
 type StockPriceHistory struct {
 	*gorm.Model
 	ID      int
-	Stock   Stock `gorm:"index"`
+	Stock   Stock
 	StockID int
 	Price   float64
 	Volume  float64
@@ -75,4 +75,10 @@ func getPriceUpdatePendingStocks() ([]Stock, error) {
 	var stocks []Stock
 	err := db.DB.Find(&stocks, "price_to_be_updated = ?", true).Order("price_to_be_updated desc").Error
 	return stocks, err
+}
+
+func GetStockBySymbol(symbol string) (Stock, error) {
+	var stock Stock
+	err := db.DB.Find(&stock, "symbol = ?", symbol).Error
+	return stock, err
 }

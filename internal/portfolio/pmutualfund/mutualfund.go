@@ -2,7 +2,9 @@ package pmutualfund
 
 import (
 	"errors"
+	"time"
 
+	"github.com/samar2170/portfolio-manager-v4/internal"
 	"github.com/samar2170/portfolio-manager-v4/internal/models"
 	"github.com/samar2170/portfolio-manager-v4/pkg/db"
 	mutualfund "github.com/samar2170/portfolio-manager-v4/security/mutual-fund"
@@ -17,9 +19,28 @@ type MutualFundTrade struct {
 	Quantity     int
 	Price        float64
 	TradeType    string
-	TradeDate    string
+	TradeDate    time.Time
 	Account      models.DematAccount
 }
+
+func NewMutualFundTrade(mutualFundID int, quantity int, price float64, tradeDate, tradeType string) (*MutualFundTrade, error) {
+	mutualFund, err := mutualfund.GetMutualFundByID(mutualFundID)
+	if err != nil {
+		return nil, err
+	}
+	tradeDateParsed, err := time.Parse(tradeDate, internal.TradeDateFormat)
+	if err != nil {
+		return nil, errors.New("invalid trade date")
+	}
+	return &MutualFundTrade{
+		MutualFundID: mutualFund.ID,
+		Quantity:     quantity,
+		Price:        price,
+		TradeType:    tradeType,
+		TradeDate:    tradeDateParsed,
+	}, nil
+}
+
 type MutualFundHolding struct {
 	*gorm.Model
 	MutualFundID int

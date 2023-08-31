@@ -37,15 +37,15 @@ type TradeInterface interface {
 
 // lets do it blockchain style
 func RegisterTrade(td TradeInterface) {
-	switch td.(type) {
+	switch td := td.(type) {
 	case *pstock.StockTrade:
-		pstock.RegisterStockTrade(td.(*pstock.StockTrade))
+		pstock.RegisterStockTrade(td)
 	case *pbond.BondTrade:
-		pbond.RegisterBondTrade(td.(*pbond.BondTrade))
+		pbond.RegisterBondTrade(td)
 	case *pmutualfund.MutualFundTrade:
-		pmutualfund.RegisterMutualFundTrade(td.(*pmutualfund.MutualFundTrade))
+		pmutualfund.RegisterMutualFundTrade(td)
 	case *pets.ETSTrade:
-		pets.RegisterETSTrade(td.(*pets.ETSTrade))
+		pets.RegisterETSTrade(td)
 	}
 	createHashBlockForTrade(&td)
 }

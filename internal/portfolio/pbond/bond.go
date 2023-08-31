@@ -20,6 +20,21 @@ type BondTrade struct {
 	TradeDate string
 	Account   models.DematAccount
 }
+
+func NewBondTrade(symbol string, quantity int, price float64, tradeDate, tradeType string) (*BondTrade, error) {
+	bond, err := bond.GetBondBySymbol(symbol)
+	if err != nil {
+		return nil, err
+	}
+	return &BondTrade{
+		BondID:    bond.ID,
+		Quantity:  quantity,
+		Price:     price,
+		TradeType: tradeType,
+		TradeDate: tradeDate,
+	}, nil
+}
+
 type BondHolding struct {
 	*gorm.Model
 	BondID   int
