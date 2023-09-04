@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/samar2170/portfolio-manager-v4/internal"
+	"github.com/samar2170/portfolio-manager-v4/internal/bulkupload"
 	"github.com/samar2170/portfolio-manager-v4/pkg/mw"
 	"github.com/samar2170/portfolio-manager-v4/pkg/response"
 )
@@ -81,4 +82,21 @@ func registerAccount(c echo.Context) error {
 	default:
 		return c.JSON(response.BadRequestResponseEcho("Invalid Account Type"))
 	}
+}
+
+func downloadTradeTemplate(c echo.Context) error {
+	return c.Attachment("assets/trade-template.xlsx", "Trade Template")
+}
+
+func uploadTradeSheet(c echo.Context) error {
+	userCID := c.Get("user_cid").(string)
+	file, err := c.FormFile("file")
+	if err != nil {
+		return c.JSON(response.BadRequestResponseEcho(err.Error()))
+	}
+	err = bulkupload.SaveBulkUploadFile(file, userCID)
+	if err != nil {
+		return c.JSON(response.BadRequestResponseEcho(err.Error()))
+	}
+	return c.JSON(response.SuccessResponseEcho("Successfully Upload"))
 }

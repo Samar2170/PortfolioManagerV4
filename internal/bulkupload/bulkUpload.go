@@ -1,29 +1,34 @@
-package internal
+package bulkupload
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"mime/multipart"
+	"os"
+	"strings"
 
+	"github.com/samar2170/portfolio-manager-v4/internal"
+	"github.com/samar2170/portfolio-manager-v4/internal/models"
 	"github.com/samar2170/portfolio-manager-v4/pkg/utils/structs"
 	"github.com/xuri/excelize/v2"
 )
 
 func CreateTradeTemplate() error {
 	var err error
-	// f, err := excelize.OpenFile("assets/trade-template.xlsx", excelize.Options{})
-	f := excelize.NewFile()
-	// if err != nil {
-	// 	return err
-	// }
+	f, err := excelize.OpenFile("assets/trade-template.xlsx", excelize.Options{})
+	if err != nil {
+		f = excelize.NewFile()
+	}
 	defer func() {
 		if err := f.Close(); err != nil {
 			log.Println(err)
 		}
 	}()
-	var str StockTradeRequest
-	var btr BondTradeRequest
-	var mtr MutualFundTradeRequest
-	var etr ETSTradeRequest
+	var str internal.StockTradeRequest
+	var btr internal.BondTradeRequest
+	var mtr internal.MutualFundTradeRequest
+	var etr internal.ETSTradeRequest
 
 	var names []string
 	var types []string
@@ -78,6 +83,42 @@ func createRowFromApiRequest(t interface{}) (names []string, types []string) {
 		types = append(types, v)
 	}
 	return
+}
+
+var UploadsDir = "uploads"
+
+func SaveBulkUploadFile(file *multipart.FileHeader, userCID string) error {
+	var err error
+	user, err := models.GetUserByCID(userCID)
+	if err != nil {
+		return err
+	}
+	fileNameSplit := strings.Split(file.Filename, ".")
+	fileExt := fileNameSplit[len(fileNameSplit)-1]
+	newFileName := user.Username + "-" + "123456789" + fileExt
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+	newFileNameWithPath := fmt.Sprintf("%v/%v", UploadsDir, newFileName)
+	dst, err := os.Create(newFileNameWithPath)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+	_, err = io.Copy(dst, src)
+	if err != nil {
+		return err
+	}
+	bu := BulkUploadSheet{
+		Name:    file.Filename,
+		NewName: newFileName,
+		UserCID: userCID,
+		Path:    newFileNameWithPath,
+	}
+	err = bu.create()
+	return err
 }
 
 func TestExcelize() {

@@ -22,11 +22,12 @@ type DematAccountRequest struct {
 }
 
 type StockTradeRequest struct {
-	Symbol    string  `json:"symbol"`
-	Quantity  int     `json:"quantity"`
-	Price     float64 `json:"price"`
-	TradeType string  `json:"trade_type"`
-	TradeDate string  `json:"trade_date"`
+	Symbol      string  `json:"symbol"`
+	Quantity    int     `json:"quantity"`
+	Price       float64 `json:"price"`
+	TradeType   string  `json:"trade_type"`
+	TradeDate   string  `json:"trade_date"`
+	AccountCode string  `json:"account_code"`
 }
 
 // func (st *StockTradeRequest) BulkUploadTemplate() {
@@ -34,11 +35,12 @@ type StockTradeRequest struct {
 // }
 
 type BondTradeRequest struct {
-	Symbol    string  `json:"symbol"`
-	Quantity  int     `json:"quantity"`
-	Price     float64 `json:"price"`
-	TradeType string  `json:"trade_type"`
-	TradeDate string  `json:"trade_date"`
+	Symbol      string  `json:"symbol"`
+	Quantity    int     `json:"quantity"`
+	Price       float64 `json:"price"`
+	TradeType   string  `json:"trade_type"`
+	TradeDate   string  `json:"trade_date"`
+	AccountCode string  `json:"account_code"`
 }
 
 type MutualFundTradeRequest struct {
@@ -47,12 +49,14 @@ type MutualFundTradeRequest struct {
 	Price        float64 `json:"price"`
 	TradeType    string  `json:"trade_type"`
 	TradeDate    string  `json:"trade_date"`
+	AccountCode  string  `json:"account_code"`
 }
 
 type ETSTradeRequest struct {
-	Symbol    string  `json:"symbol"`
-	Quantity  int     `json:"quantity"`
-	Price     float64 `json:"price"`
-	TradeType string  `json:"trade_type"`
-	TradeDate string  `json:"trade_date"`
+	Symbol      string  `json:"symbol"`
+	Quantity    int     `json:"quantity"`
+	Price       float64 `json:"price"`
+	TradeType   string  `json:"trade_type"`
+	TradeDate   string  `json:"trade_date"`
+	AccountCode string  `json:"account_code"`
 }
