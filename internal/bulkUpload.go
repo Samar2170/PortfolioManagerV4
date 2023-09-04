@@ -21,9 +21,9 @@ func CreateTradeTemplate() error {
 		}
 	}()
 	var str StockTradeRequest
-	// var btr BondTradeRequest
-	// var mtr MutualFundTradeRequest
-	// var etr ETSTradeRequest
+	var btr BondTradeRequest
+	var mtr MutualFundTradeRequest
+	var etr ETSTradeRequest
 
 	var names []string
 	var types []string
@@ -36,8 +36,6 @@ func CreateTradeTemplate() error {
 
 	fmt.Printf("%T\n", names)
 	fmt.Printf("%T\n", types)
-	// names = []string{"Name", "Type", "Quantity", "Price", "Date", "Brokerage", "STT", "GST", "StampDuty", "TransactionType"}
-	// types = []string{"string", "string", "int", "float", "string", "float", "float", "float", "float", "string"}
 	f.NewSheet("Stock")
 	err = f.SetSheetRow("Stock", "A1", &names)
 	if err != nil {
@@ -47,28 +45,24 @@ func CreateTradeTemplate() error {
 	if err != nil {
 		return err
 	}
-	err = f.SetSheetRow("Sheet1", "A1", &names)
+	names, types = createRowFromApiRequest(btr)
+	f.NewSheet("Bond")
+	f.SetSheetRow("Bond", "A1", &names)
+	f.SetSheetRow("Bond", "A2", &types)
+
+	names, types = createRowFromApiRequest(mtr)
+	f.NewSheet("MutualFund")
+	f.SetSheetRow("MutualFund", "A1", &names)
+	f.SetSheetRow("MutualFund", "A2", &types)
+
+	names, types = createRowFromApiRequest(etr)
+	f.NewSheet("ETS")
+
+	err = f.SetSheetRow("ETS", "A1", &names)
 	if err != nil {
 		return err
 	}
-	// names, types = createRowFromApiRequest(btr)
-	// f.NewSheet("Bond")
-	// f.SetSheetRow("Bond", "A1", &names)
-	// f.SetSheetRow("Bond", "A2", &types)
-
-	// names, types = createRowFromApiRequest(mtr)
-	// f.NewSheet("MutualFund")
-	// f.SetSheetRow("MutualFund", "A1", &names)
-	// f.SetSheetRow("MutualFund", "A2", &types)
-
-	// names, types = createRowFromApiRequest(etr)
-	// f.NewSheet("ETS")
-
-	// err = f.SetSheetRow("ETS", "A1", &names)
-	// if err != nil {
-	// 	return err
-	// }
-	// f.SetSheetRow("ETS", "A2", &types)
+	f.SetSheetRow("ETS", "A2", &types)
 
 	if err := f.SaveAs("assets/trade-template.xlsx"); err != nil {
 		return err
@@ -93,18 +87,10 @@ func TestExcelize() {
 			fmt.Println(err)
 		}
 	}()
-	// Create a new sheet.
 	index := f.NewSheet("Sheet2")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// Set value of a cell.
 	f.SetCellValue("Sheet2", "A2", "Hello world.")
 	f.SetCellValue("Sheet1", "B2", 100)
-	// Set active sheet of the workbook.
 	f.SetActiveSheet(index)
-	// Save spreadsheet by the given path.
 	if err := f.SaveAs("Book1.xlsx"); err != nil {
 		fmt.Println(err)
 	}

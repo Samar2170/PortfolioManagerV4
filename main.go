@@ -63,5 +63,4 @@ func dev() {
 	if err != nil {
 		log.Println(err)
 	}
-	internal.TestExcelize()
 }
