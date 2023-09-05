@@ -4,4 +4,6 @@ principles.md
 gorm.db
 .vscode/
 
-__debug*
+__debug_bin*
+
+/uploads/**

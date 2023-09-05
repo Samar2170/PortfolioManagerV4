@@ -2,6 +2,7 @@ package pbond
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/samar2170/portfolio-manager-v4/internal/models"
 	"github.com/samar2170/portfolio-manager-v4/pkg/db"
@@ -21,15 +22,23 @@ type BondTrade struct {
 	Account   models.DematAccount
 }
 
-func NewBondTrade(symbol string, quantity int, price float64, tradeDate, tradeType string) (*BondTrade, error) {
+func NewBondTrade(symbol string, quantity, price, tradeDate, tradeType string) (*BondTrade, error) {
 	bond, err := bond.GetBondBySymbol(symbol)
+	if err != nil {
+		return nil, err
+	}
+	quantityParsed, err := strconv.ParseInt(quantity, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	priceParsed, err := strconv.ParseFloat(price, 64)
 	if err != nil {
 		return nil, err
 	}
 	return &BondTrade{
 		BondID:    bond.ID,
-		Quantity:  quantity,
-		Price:     price,
+		Quantity:  int(quantityParsed),
+		Price:     priceParsed,
 		TradeType: tradeType,
 		TradeDate: tradeDate,
 	}, nil

@@ -5,6 +5,10 @@ import (
 	"gorm.io/gorm"
 )
 
+func init() {
+	db.DB.AutoMigrate(BulkUploadSheet{})
+}
+
 type BulkUploadSheet struct {
 	*gorm.Model
 	ID          uint
@@ -25,4 +29,10 @@ func GetBulkUploadSheetByID(id uint) (BulkUploadSheet, error) {
 	var s BulkUploadSheet
 	err := db.DB.Where("id =?", id).First(&s).Error
 	return s, err
+}
+
+func getUnparsedBulkUploadSheets(limit uint) ([]uint, error) {
+	var ids []uint
+	err := db.DB.Model(&BulkUploadSheet{}).Where("parsed =?", false).Limit(int(limit)).Select("id").Find(&ids).Error
+	return ids, err
 }

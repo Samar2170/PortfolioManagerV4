@@ -2,6 +2,7 @@ package pmutualfund
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/samar2170/portfolio-manager-v4/internal"
@@ -16,14 +17,14 @@ type MutualFundTrade struct {
 	ID           int
 	MutualFundID int
 	MutualFund   *mutualfund.MutualFund
-	Quantity     int
+	Quantity     float64
 	Price        float64
 	TradeType    string
 	TradeDate    time.Time
 	Account      models.DematAccount
 }
 
-func NewMutualFundTrade(mutualFundID int, quantity int, price float64, tradeDate, tradeType string) (*MutualFundTrade, error) {
+func NewMutualFundTrade(mutualFundID int, quantity, price, tradeDate, tradeType string) (*MutualFundTrade, error) {
 	mutualFund, err := mutualfund.GetMutualFundByID(mutualFundID)
 	if err != nil {
 		return nil, err
@@ -32,10 +33,18 @@ func NewMutualFundTrade(mutualFundID int, quantity int, price float64, tradeDate
 	if err != nil {
 		return nil, errors.New("invalid trade date")
 	}
+	quantityParsed, err := strconv.ParseFloat(quantity, 64)
+	if err != nil {
+		return nil, err
+	}
+	priceParsed, err := strconv.ParseFloat(price, 64)
+	if err != nil {
+		return nil, err
+	}
 	return &MutualFundTrade{
 		MutualFundID: mutualFund.ID,
-		Quantity:     quantity,
-		Price:        price,
+		Quantity:     quantityParsed,
+		Price:        priceParsed,
 		TradeType:    tradeType,
 		TradeDate:    tradeDateParsed,
 	}, nil
@@ -45,7 +54,7 @@ type MutualFundHolding struct {
 	*gorm.Model
 	MutualFundID int
 	MutualFund   *mutualfund.MutualFund
-	Quantity     int
+	Quantity     float64
 	BuyPrice     float64
 	Account      models.DematAccount
 }

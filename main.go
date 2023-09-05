@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"sync"
 	"time"
@@ -56,8 +55,5 @@ func setup() {
 }
 
 func dev() {
-	err := bulkupload.CreateTradeTemplate()
-	if err != nil {
-		log.Println(err)
-	}
+	bulkupload.ParseBulkUploadSheets()
 }

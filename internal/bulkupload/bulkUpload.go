@@ -95,7 +95,7 @@ func SaveBulkUploadFile(file *multipart.FileHeader, userCID string) error {
 	}
 	fileNameSplit := strings.Split(file.Filename, ".")
 	fileExt := fileNameSplit[len(fileNameSplit)-1]
-	newFileName := user.Username + "-" + "123456789" + fileExt
+	newFileName := user.Username + "-" + "123456789" + "." + fileExt
 	src, err := file.Open()
 	if err != nil {
 		return err
