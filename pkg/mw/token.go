@@ -18,6 +18,8 @@ type JwtCustomClaims struct {
 func JwtMiddleware(secretKey string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			log.Println(c.Request().Header)
+
 			if c.Request().Method == "OPTIONS" {
 				return next(c)
 			}

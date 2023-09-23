@@ -82,10 +82,18 @@ func NewStockTrades(rows [][]string) ([]pstock.StockTrade, error) {
 		stockTradesMaps = append(stockTradesMaps, stockTradeMap)
 	}
 	fmt.Println(stockTradesMaps)
-	// var stockTrades []pstock.StockTrade
-	// for _, mapRow := range stockTradesMaps {
-	// 	nst, err := pstock.NewStockTrade(mapRow["Symbol"], mapRow["Quantity"], mapRow["Price"], mapRow["TradeDate"], mapRow["TradeType"])
-	// }
+	var stockTrades []pstock.StockTrade
+	for _, mapRow := range stockTradesMaps {
+		nst, err := pstock.NewStockTrade(mapRow["Symbol"], mapRow["Quantity"], mapRow["Price"], mapRow["TradeDate"], mapRow["TradeType"])
+		if err != nil {
+			return []pstock.StockTrade{}, err
+		}
+		stockTrades = append(stockTrades, *nst)
+	}
+	fmt.Println(stockTrades)
+	for _, stockTrade := range stockTrades {
+		pstock.RegisterStockTrade(&stockTrade)
+	}
 	return []pstock.StockTrade{}, errors.New("no data")
 }
 

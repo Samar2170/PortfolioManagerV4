@@ -21,6 +21,18 @@ type BulkUploadSheet struct {
 	UserCID     string
 }
 
+type BulkUploadSheetErrors struct {
+	*gorm.Model
+	ID          uint
+	Name        string
+	NewName     string
+	Path        string
+	Parsed      bool
+	Error       bool
+	ErrorString string
+	UserCID     string
+}
+
 func (s *BulkUploadSheet) create() error {
 	return db.DB.Create(s).Error
 }
